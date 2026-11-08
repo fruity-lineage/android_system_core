@@ -1232,6 +1232,12 @@ void PropertyLoadBootDefaults() {
     }
 
     initialize_microdroid_properties(&properties);
+#ifdef SPOOF_FIRST_API_LEVEL_32
+    if (!IsRecoveryMode()) {
+        // Apply the optional compatibility value before the read-only property is published.
+        properties["ro.product.first_api_level"] = "32";
+    }
+#endif
     for (const auto& [name, value] : properties) {
         std::string error;
         if (PropertySetNoSocket(name, value, &error) != PROP_SUCCESS) {
